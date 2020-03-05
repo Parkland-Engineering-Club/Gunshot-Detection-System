@@ -1,2 +1,2 @@
 # Gunshot-Detection-System
-System designed to detect gunshots inside populated buildings and alert authorities through the building's emergency response system
+System designed to detect gunshots inside populated buildings and alert authorities through the building's emergency alert system. The system utilizes two modified custom clapswitch circuts, an Arduino Uno, and a Liquid Crystal Display to filter, detect, and signal the discharge of a weapon. We hope that this system can be used in schools and offices around the world to help prevent gun violence. 
