@@ -26,7 +26,7 @@
 const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
-const int inPinS1 = 6, inPinS2 = 7, resetButtonPin = 8, ledPinS1 = 10, ledPinS2 = 9; //define all pins
+const int inPinS1 = A0/*6*/, inPinS2 = A1/*7*/, resetButtonPin = 8, ledPinS1 = 10, ledPinS2 = 9; //define all pins
 int shotCount = 0, valueS1 = 0, valueS2 = 0;
 bool eventS1 = 0, eventS2 = 0, eventMain = 0; //declare bools
 unsigned long timePassed; //declares timer var
@@ -35,9 +35,9 @@ unsigned long timePassed; //declares timer var
 void setup() {
   Serial.begin(9600); //initialize the serial
   lcd.begin(16, 2); //initialize the LCD with 16 columns and 2 rows
-  /*For digital input pins*/
+  /*For digital input pins:
   pinMode(inPinS1, INPUT); //set pins from the clap switch to input
-  pinMode(inPinS2, INPUT);
+  pinMode(inPinS2, INPUT);*/
   pinMode(resetButtonPin, INPUT);
   pinMode(ledPinS1, OUTPUT); //set the led indicators to outputs
   pinMode(ledPinS2, OUTPUT);
@@ -46,14 +46,14 @@ void setup() {
   lcd.setCursor(0, 1);
   lcd.print("Engineering Club");
   Serial.println("Parkland Engineering Club"); //print plug in serial
-  delay(1000); //wait for 750 ms
+  delay(1750); //wait for 1750 ms
   lcd.clear(); //clear the lcd
   lcd.setCursor(4, 0);
   lcd.print("Gunshot"); //logo screen
   lcd.setCursor(0, 1);
   lcd.print("Detection System");
   Serial.println("Gunshot Detection System");
-  delay(1000); //wait for 1000 ms
+  delay(1750); //wait for 1750 ms
   lcd.clear();
   lcd.print("System Normal"); //this is what will be displayed while the system is waiting for an event
   delay(700); //wait for 700 ms
@@ -63,31 +63,39 @@ void setup() {
 void loop() {
   while (digitalRead(resetButtonPin) == LOW) { //this loop will run until the reset button is pressed
     while (eventMain == 0) { //runs until both sensors are triggered
-      Serial.println("System Waiting"); //this is what will be displayed while the system is waiting for an event
+      Serial.println("System Waiting"); //this is what will be displayed every second while the system is waiting for an event
       while (millis() - timePassed < 1000) { //resets the sensors every second
-        /*if (inPinS1 == HIGH) { //check if sensor 1 detects gunshot
+        /*For digital input pins:
+         * 
+        if (inPinS1 == HIGH) { //check if sensor 1 detects gunshot
           eventS1 = 1;
           Serial.println("Event Detected at Sensor 1"); //logs sensor 1 event into serial
           digitalWrite(ledPinS1, HIGH); //turns on the led
-          //timePassed = millis(); //starts the clock
+          timePassed = millis(); //starts the clock
         }*/
         valueS1 = analogRead(inPinS1);
         if (valueS1 >= 1032) { //check if sensor 1 detects gunshot
           eventS1 = 1;
           Serial.println("Event Detected at Sensor 1"); //logs sensor 1 event into serial
+          digitalWrite(ledPinS1, HIGH); //turns on the led
+          timePassed = millis(); //starts the clock
         }
-        /*if (inPinS2 == HIGH) {
+        /*For digital input pins:
+         * 
+        if (inPinS2 == HIGH) {
           eventS2 = 1;
           Serial.println("Event Detected at Sensor 2"); //logs sensor 2 event into serial
           digitalWrite(ledPinS2, HIGH);
-          //timePassed = millis(); //starts the clock
+          timePassed = millis(); //starts the clock
         }*/
-        trigger1 = analogRead(inPinS1);
-        if (S1value <= 1032) { //check if sensor 1 detects gunshot
-          eventS1 = 1;
+        valueS2 = analogRead(inPinS2);
+        if (valueS2 >= 1032) { //check if sensor 1 detects gunshot
+          eventS2 = 1;
           Serial.println("Event Detected at Sensor 1"); //logs sensor 1 event into serial
+          digitalWrite(ledPinS2, HIGH);
+          timePassed = millis(); //starts the clock
         }
-        if (eventS1 == 1, eventS2 == 1) { //if both events are triggered
+        if (eventS1 == 1 && eventS2 == 1) { //if both events are triggered
           Serial.println("Main event triggered"); //logs main event into serial
           eventMain = 1;
           eventS1 = 0;
