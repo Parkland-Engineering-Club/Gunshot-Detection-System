@@ -31,6 +31,12 @@ int shotCount = 0, valueS1 = 0, valueS2 = 0;
 bool eventS1 = 0, eventS2 = 0, eventMain = 0; //declare bools
 unsigned long timePassed; //declares timer var
 
+/* -------------------------------------------
+ * Set the lowest trigger value here (max: 1032 = 5V)*/
+const int triggerVal = 1032;
+/* ------------------------------------------- */
+
+
 /*The setup() function runs once, after each powerup or reset of the Arduino board */
 void setup() {
   Serial.begin(9600); //initialize the serial
@@ -62,9 +68,9 @@ void setup() {
 /*The loop() function runs continuosly until interupted or turned off*/
 void loop() {
   while (digitalRead(resetButtonPin) == LOW) { //this loop will run until the reset button is pressed
-    while (eventMain == 0) { //runs until both sensors are triggered
+    while (eventMain == 0 && digitalRead(resetButtonPin) == LOW) { //runs until both sensors are triggered
       Serial.println("System Waiting"); //this is what will be displayed every second while the system is waiting for an event
-      while (millis() - timePassed < 1000) { //resets the sensors every second
+      while (millis() - timePassed < 1000 && eventMain == 0 && digitalRead(resetButtonPin) == LOW) { //resets the sensors every second
         /*For digital input pins:
          * 
         if (inPinS1 == HIGH) { //check if sensor 1 detects gunshot
@@ -74,7 +80,7 @@ void loop() {
           timePassed = millis(); //starts the clock
         }*/
         valueS1 = analogRead(inPinS1);
-        if (valueS1 >= 1032) { //check if sensor 1 detects gunshot
+        if (valueS1 >= triggerVal) { //check if sensor 1 detects gunshot
           eventS1 = 1;
           Serial.println("Event Detected at Sensor 1"); //logs sensor 1 event into serial
           digitalWrite(ledPinS1, HIGH); //turns on the led
@@ -89,7 +95,7 @@ void loop() {
           timePassed = millis(); //starts the clock
         }*/
         valueS2 = analogRead(inPinS2);
-        if (valueS2 >= 1032) { //check if sensor 1 detects gunshot
+        if (valueS2 >= triggerVal) { //check if sensor 1 detects gunshot
           eventS2 = 1;
           Serial.println("Event Detected at Sensor 1"); //logs sensor 1 event into serial
           digitalWrite(ledPinS2, HIGH);
