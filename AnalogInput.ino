@@ -1,8 +1,9 @@
 /*
   Analog Input Testing Code
-
   Tests analog input by reading an analog sensor on analog pin 0 and 1 and 
   display the value and the voltage of both pins on LCD screen and in the serial 
+
+  Make sure you set the Serial Monitor to 9600 baud 
   
 */
 #include <LiquidCrystal.h> //LCD library
@@ -65,9 +66,6 @@ void loop() {
   lcd.print("V");
   
   delay(500); //delay .5 secs
-  trigger1 = 0;
-  trigger2 = 0;
-  v1 = 0;
-  v2 = 0;
+  lcd.clear();
   }
 }
