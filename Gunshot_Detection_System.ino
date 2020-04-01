@@ -47,6 +47,7 @@ void setup() {
   pinMode(resetButtonPin, INPUT);
   pinMode(ledPinS1, OUTPUT); //set the led indicators to outputs
   pinMode(ledPinS2, OUTPUT);
+  pinMode(buzzer, OUTPUT); // set the buzzer to output
   lcd.setCursor(3, 0); //set the LCD cursor 5 columns in on the first line
   lcd.print("Parkland"); //plug
   lcd.setCursor(0, 1);
@@ -78,6 +79,12 @@ void loop() {
           Serial.println("Event Detected at Sensor 1"); //logs sensor 1 event into serial
           digitalWrite(ledPinS1, HIGH); //turns on the led
           timePassed = millis(); //starts the clock
+        }
+        if (inPinS2 == HIGH) {
+          eventS2 = 1;
+          Serial.println("Event Detected at Sensor 2"); //logs sensor 2 event into serial
+          digitalWrite(ledPinS2, HIGH);
+          timePassed = millis(); //starts the clock
         }*/
         valueS1 = analogRead(inPinS1);
         if (valueS1 >= triggerVal) { //check if sensor 1 detects gunshot
@@ -86,14 +93,6 @@ void loop() {
           digitalWrite(ledPinS1, HIGH); //turns on the led
           timePassed = millis(); //starts the clock
         }
-        /*For digital input pins:
-         * 
-        if (inPinS2 == HIGH) {
-          eventS2 = 1;
-          Serial.println("Event Detected at Sensor 2"); //logs sensor 2 event into serial
-          digitalWrite(ledPinS2, HIGH);
-          timePassed = millis(); //starts the clock
-        }*/
         valueS2 = analogRead(inPinS2);
         if (valueS2 >= triggerVal) { //check if sensor 1 detects gunshot
           eventS2 = 1;
@@ -112,7 +111,7 @@ void loop() {
       eventS1 = 0;
       eventS2 = 0;
     }
-    ++shotCount;
+    shotCount++;
     if (shotCount = 1) {
       lcd.setCursor(0, 0);
       lcd.print("Shots Detected"); //diplay alert on LCD
